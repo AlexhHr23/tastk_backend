@@ -61,9 +61,9 @@ router.post('/:projectId/tasks',
     TaskController.createTask
 )
 
-router.get('/:projectId/tasks',
+router.get('/:projectId/tasks/:taskId',
     validateProjectExist,
-    TaskController.getProjectTasks
+    TaskController.getTaskById
 )
 
 
