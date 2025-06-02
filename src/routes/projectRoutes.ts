@@ -92,6 +92,14 @@ router.delete('/:projectId/tasks/:taskId',
     TaskController.deleteTask
 )
 
+router.post('/:projectId/tasks/:taskId',
+    param('taskId').isMongoId().withMessage('ID no válido'),
+    body('status')
+        .notEmpty().withMessage('EL estado es obligatorio'),
+    handleInputErrors,
+    TaskController.updateStatus
+)
+
 
 
 
