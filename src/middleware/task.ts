@@ -33,3 +33,15 @@ export const taskExist = async(req: Request, res: Response, next: NextFunction) 
     }
 
 } 
+
+
+export const taskBelongsToProject = (req: Request, res: Response, next: NextFunction) => {
+    if(req.task.project.toString() !== req.project.id.toString()) {
+        const error = new Error('Acción no valida')
+        res.status(400).json({error: error.message})
+    }
+
+    next()
+    return
+
+}
