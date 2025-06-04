@@ -1,4 +1,5 @@
 import express from "express";
+import morgan from "morgan";
 import dotenv from 'dotenv'
 import { corsConfig } from "./config/cors";
 import cors from 'cors';
@@ -14,6 +15,10 @@ connectDB()
 const app = express()
 
 app.use(cors(corsConfig))
+
+
+//Logging
+app.use(morgan('dev'))
 
 app.use(express.json())
 
