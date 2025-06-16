@@ -11,7 +11,7 @@ router.post('/create-account',
         .notEmpty().withMessage('EL nombre no puede ir vacio'),
     body('password')
         .isLength({min: 8}).withMessage('La contraseña debe tener minimo 8 caracteres'),
-    body('password_confimation').custom((value, {req}) => {
+    body('password_confirmation').custom((value, {req}) => {
         if(value !== req.body.password) {
             throw new Error('Las contreñas no son iguales')
         }

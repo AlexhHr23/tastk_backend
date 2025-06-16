@@ -18,6 +18,10 @@ const userSchema: Schema = new Schema({
         type: String,
         required: true, 
     },
+    password: {
+        type: String,
+        required: true
+    },
     confirmed: {
         type: Boolean,
         default: false
