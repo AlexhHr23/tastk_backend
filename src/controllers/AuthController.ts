@@ -1,4 +1,4 @@
-import type {Request, Response} from 'express'
+import type { Request, Response } from 'express'
 import bcrypt from "bcrypt"
 import User from '../models/User'
 import { hashPassword } from '../utils/auth'
@@ -9,18 +9,18 @@ import { AuthEMail } from '../emails/AuthEmails'
 
 
 export class AuthController {
-    
 
-    static createAccount = async(req : Request, res: Response) => {
+
+    static createAccount = async (req: Request, res: Response) => {
         try {
             const { password, email } = req.body
 
             //Prevenir duplicados
-            const userExists = await User.findOne({email})
+            const userExists = await User.findOne({ email })
 
-            if(userExists) {
+            if (userExists) {
                 const error = new Error('Ya existe un usuario con ese email')
-                res.status(409).json({error: error.message})
+                res.status(409).json({ error: error.message })
             }
 
             //Crear usuario
@@ -39,24 +39,24 @@ export class AuthController {
                 name: user.name,
                 token: token.token
             })
-           
-            
+
+
             await Promise.allSettled([user.save(), token.save()])
             res.send('Cuenta creada. revisa tu email para confirmarla')
         } catch (error) {
             console.log(error);
-            res.status(500).json({error: 'Hubo un error'})
+            res.status(500).json({ error: 'Hubo un error' })
         }
     }
 
-    static confirmAccount = async(req : Request, res: Response) => {
+    static confirmAccount = async (req: Request, res: Response) => {
         try {
-            const {token} = req.body
+            const { token } = req.body
 
-            const tokenExist = await Token.findOne({token})
-            if(!tokenExist) {
+            const tokenExist = await Token.findOne({ token })
+            if (!tokenExist) {
                 const error = new Error('Token no válido')
-                res.status(401).json({error: error.message})
+                res.status(404).json({ error: error.message })
             }
 
             const user = await User.findById(tokenExist.user)
@@ -68,7 +68,40 @@ export class AuthController {
             ])
             res.send('Cuenta confirmada correctamente')
         } catch (error) {
-            res.status(500).json({error: 'Hubo un error'})
+            res.status(500).json({ error: 'Hubo un error' })
+        }
+    }
+
+
+    static login = async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body
+            const user = await User.findOne({ email })
+            if (!user) {
+                const error = new Error('Usuario no encontrado')
+                res.status(404).json({ error: error.message })
+            }
+
+            if (!user.confirmed) {
+                const token = new Token()
+                token.user = user.id
+                token.token = generateToken()
+                await token.save()
+
+                //Enviar email
+                AuthEMail.sendConfirmationEmail({
+                    email: user.email,
+                    name: user.name,
+                    token: token.token
+                })
+
+                const error = new Error('La cuenta no ha sido confirmada, hemos un enviado un e-mail de confirmación')
+                res.status(401).json({ error: error.message })
+            }
+
+            res.send('Usuario encontrado')
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' })
         }
     }
 }
