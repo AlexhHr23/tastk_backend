@@ -33,7 +33,7 @@ export class AuthController {
             token.token = generateToken()
             token.user = user.id
 
-            //Enviar esmail
+            //Enviar email
             AuthEMail.sendConfirmationEmail({
                 email: user.email,
                 name: user.name,
@@ -45,6 +45,20 @@ export class AuthController {
             res.send('Cuenta creada. revisa tu email para confirmarla')
         } catch (error) {
             console.log(error);
+            res.status(500).json({error: 'Hubo un error'})
+        }
+    }
+
+    static confirmAccount = async(req : Request, res: Response) => {
+        try {
+            const {token} = req.body
+
+            const tokenExist = await Token.findOne({token})
+            if(!tokenExist) {
+                const error = new Error('Token no válido')
+                res.status(401).json({error: error.message})
+            }
+        } catch (error) {
             res.status(500).json({error: 'Hubo un error'})
         }
     }
