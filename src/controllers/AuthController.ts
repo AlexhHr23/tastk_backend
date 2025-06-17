@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import bcrypt from "bcrypt"
 import User from '../models/User'
-import { hashPassword } from '../utils/auth'
+import { checkPassword, hashPassword } from '../utils/auth'
 import Token from '../models/Token'
 import { generateToken } from '../utils/token'
 import { AuthEMail } from '../emails/AuthEmails'
@@ -99,7 +99,14 @@ export class AuthController {
                 res.status(401).json({ error: error.message })
             }
 
-            res.send('Usuario encontrado')
+            //Revisar password
+            const isPasswordCorrect = await checkPassword(password, user.password)
+            if(!isPasswordCorrect){
+                const error = new Error('Password incorrecto')
+                res.status(404).json({error: error.message})
+            }
+
+            res.send('Usuario autenticado.....')
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }
