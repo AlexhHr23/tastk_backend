@@ -71,6 +71,13 @@ export class ProjectController {
                 res.status(404).json({ error: error.message })
                 return
             }
+
+            if(project.manager.toString() !== req.user.id.toString()){
+                 const error = new Error('Solo el manager puede actualizar un proyecto')
+                res.status(404).json({ error: error.message })
+                return
+            }
+
             project.projectName = req.body.projectName
             project.clientName = req.body.clientName
             project.description = req.body.description
@@ -88,6 +95,12 @@ export class ProjectController {
             const project = await Project.findById(id)
             if (!project) {
                 const error = new Error('Proyecto no encontrado')
+                res.status(404).json({ error: error.message })
+                return
+            }
+
+            if(project.manager.toString() !== req.user.id.toString()){
+                 const error = new Error('Solo el manager elimiar un proyecto')
                 res.status(404).json({ error: error.message })
                 return
             }
