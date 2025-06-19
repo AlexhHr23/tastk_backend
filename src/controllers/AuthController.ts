@@ -199,14 +199,33 @@ export class AuthController {
                 res.status(404).json({ error: error.message })
             }
 
+            res.send('Token válido, define tu nuevo password')
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' })
+        }
+    }
+    
+     static updatePasswordWithToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.params
+            const {password} = req.body
+
+            const tokenExist = await Token.findOne({ token })
+            if (!tokenExist) {
+                const error = new Error('Token no válido')
+                res.status(404).json({ error: error.message })
+            }
+
             const user = await User.findById(tokenExist.user)
-            user.confirmed = true
+            user.password = await hashPassword(password)
+
+            await Promise.allSettled([user.save(), tokenExist.deleteOne()])
 
             await Promise.allSettled([
                 user.save(),
                 tokenExist.deleteOne()
             ])
-            res.send('Token válido, define tu nuevo password')
+            res.send('La contraseña ha sido cambiado correctamente')
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }

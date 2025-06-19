@@ -1,18 +1,18 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/AuthController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { handleInputErrors } from "../middleware/validation";
 
 
 const router = Router()
 
-router.post('/create-account', 
+router.post('/create-account',
     body('name')
         .notEmpty().withMessage('EL nombre no puede ir vacio'),
     body('password')
-        .isLength({min: 8}).withMessage('La contraseña debe tener minimo 8 caracteres'),
-    body('password_confirmation').custom((value, {req}) => {
-        if(value !== req.body.password) {
+        .isLength({ min: 8 }).withMessage('La contraseña debe tener minimo 8 caracteres'),
+    body('password_confirmation').custom((value, { req }) => {
+        if (value !== req.body.password) {
             throw new Error('Las contreñas no son iguales')
         }
         return true
@@ -58,10 +58,24 @@ router.post('/forgot-password',
 )
 
 router.post('/validate-token',
-      body('token')
+    body('token')
         .notEmpty().withMessage('El token no puede ir vacio'),
     handleInputErrors,
-    AuthController.validateToken 
+    AuthController.validateToken
+)
+
+router.post('/update-password/:token',
+    param('token').isNumeric().withMessage('Token no válido'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('La contraseña debe tener minimo 8 caracteres'),
+    body('password_confirmation').custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Las contreñas no son iguales')
+        }
+        return true
+    }),
+    handleInputErrors,
+    AuthController.updatePasswordWithToken
 )
 
 
