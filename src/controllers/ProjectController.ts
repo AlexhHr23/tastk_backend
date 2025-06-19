@@ -8,6 +8,8 @@ export class ProjectController {
 
         const project = new Project(req.body)
 
+        console.log(req.user);
+
         try {
 
             await project.save()
