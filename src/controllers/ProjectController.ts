@@ -8,7 +8,8 @@ export class ProjectController {
 
         const project = new Project(req.body)
 
-        console.log(req.user);
+        //Asigna un manager
+        project.manager = req.user.id
 
         try {
 
