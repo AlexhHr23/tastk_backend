@@ -48,7 +48,7 @@ export const taskBelongsToProject = (req: Request, res: Response, next: NextFunc
 
 
 export const hasAuthorization = (req: Request, res: Response, next: NextFunction) => {
-    if(req.user.id.toString() !== req.project.manager) {
+    if(req.user.id.toString() !== req.project.manager.toString()) {
         const error = new Error('Acción no valida')
         res.status(400).json({error: error.message})
     }
