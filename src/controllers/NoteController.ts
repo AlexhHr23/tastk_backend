@@ -24,9 +24,9 @@ export class NoteController {
         }
     }
 
-    static getTaskNotes = async (req: Request<{}, {}, INote>, res: Response) => {
+    static getTaskNotes = async (req: Request, res: Response) => {
         try{
-            const notes = Note.find({task: req.task.id})
+            const notes = await Note.find({task: req.task.id})
             res.json(notes)
         }catch(error){
             console.log('error get task notes', error)
