@@ -84,5 +84,33 @@ router.get('/user',
     AuthController.user
 )
 
+/**Profile */
+
+router.put('/profile',
+    authenticate,
+    body('name')
+        .notEmpty().withMessage('EL nombre no puede ir vacio'),
+    body('email')
+        .isEmail().withMessage('E-mail no válido'),
+    handleInputErrors,
+    AuthController.updateProfile
+)
+
+router.post('change-password',
+    authenticate,
+    body('current_password')
+        .notEmpty().withMessage('El password actual no puede ir vacio'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('La contraseña debe tener minimo 8 caracteres'),
+    body('password_confirmation').custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Las contreñas no son iguales')
+        }
+        return true
+    }),
+    handleInputErrors,
+    AuthController.changePassword
+)
+
 
 export default router
