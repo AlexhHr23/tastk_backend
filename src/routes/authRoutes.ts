@@ -112,5 +112,13 @@ router.post('/change-password',
     AuthController.changePassword
 )
 
+router.post('check-password',
+    authenticate,
+    body('current_password')
+        .notEmpty().withMessage('El password actual no puede ir vacio'),
+    handleInputErrors,
+    AuthController.checkPassword
+)
+
 
 export default router
