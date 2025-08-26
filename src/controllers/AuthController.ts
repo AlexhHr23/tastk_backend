@@ -263,7 +263,7 @@ export class AuthController {
     }
 
     static changePassword = async (req: Request, res: Response) => {
-        const { current_password, password } = req.body()
+        const { current_password, password } = req.body
 
         const user = await User.findById(req.user.id)
         const isPasswordCorrect = await checkPassword(current_password, user.password)
