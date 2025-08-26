@@ -154,7 +154,7 @@ router.get('/:projectId/tasks/:taskId/notes',
     NoteController.getTaskNotes
 )
 
-router.delete('/:projectId/task/:taskId/notes/:noteId',
+router.delete('/:projectId/tasks/:taskId/notes/:noteId',
     param('noteId').isMongoId().withMessage('Id no válido'),
     handleInputErrors,
     NoteController.deleteNote
