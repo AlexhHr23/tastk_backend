@@ -54,7 +54,7 @@ router.put('/:projectId',
 
 
 router.delete('/:projectId',
-    param('id').isMongoId().withMessage('ID no válido'),
+    param('projectId').isMongoId().withMessage('ID no válido'),
     handleInputErrors,
     hasAuthorization,
     ProjectController.deleteProject

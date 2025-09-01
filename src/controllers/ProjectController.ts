@@ -62,8 +62,6 @@ export class ProjectController {
 
 
     static updateProject = async (req: Request, res: Response) => {
-
-
         try {
             req.project.projectName = req.body.projectName
             req.project.clientName = req.body.clientName
@@ -76,7 +74,6 @@ export class ProjectController {
 
     }
     static deleteProject = async (req: Request, res: Response) => {
-
         try {
             await req.project.deleteOne()
             res.send('Proyecto elimnadio ')
